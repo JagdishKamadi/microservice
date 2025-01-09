@@ -16,7 +16,7 @@ public class EmployeeService {
     }
 
     public EmployeeDTO getEmployeeById(final String id) {
-        Employee employee = employeeRepository.findEmployeeById(id).orElseThrow(() -> new RuntimeException("Employee does not exists for this id" + id));
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee does not exists for this id" + id));
         EmployeeDTO employeeDTO = new EmployeeDTO();
         // act like the model mapper
         BeanUtils.copyProperties(employee, employeeDTO, EmployeeDTO.class);
