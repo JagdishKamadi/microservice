@@ -15,7 +15,7 @@ public class AddressService {
         this.addressRepository = addressRepository;
     }
 
-    public AddressDTO getAddressById(final Integer id) {
+    public AddressDTO getAddressById(final String id) {
         Address address = addressRepository.findById(id).orElseThrow(() -> new RuntimeException("Address not found this id" + id));
         AddressDTO addressDTO = new AddressDTO();
         BeanUtils.copyProperties(address, addressDTO, AddressDTO.class);

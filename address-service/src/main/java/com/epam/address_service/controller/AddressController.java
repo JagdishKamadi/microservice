@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "api/address")
+@RequestMapping(value = "address")
 public class AddressController {
 
     private final AddressService addressService;
@@ -17,7 +17,7 @@ public class AddressController {
     }
 
     @GetMapping(value = "{id}")
-    public ResponseEntity<AddressDTO> getAddress(@PathVariable Integer id) {
+    public ResponseEntity<AddressDTO> getAddress(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.FOUND).body(addressService.getAddressById(id));
     }
 

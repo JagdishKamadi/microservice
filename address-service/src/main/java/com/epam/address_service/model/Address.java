@@ -1,16 +1,13 @@
 package com.epam.address_service.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity(name = "address_tbl")
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
     private String houseNumber;
     private String landmark;
     private String city;
@@ -20,11 +17,11 @@ public class Address {
     public Address() {
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,13 +1,17 @@
 package com.epam.employee_service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 
 public class EmployeeDTO {
 
+    @JsonIgnore
     private String id;
     private String fullName;
     private String email;
     private Date dob;
+    private AddressDTO addressDTO;
 
     public EmployeeDTO() {
     }
@@ -42,5 +46,13 @@ public class EmployeeDTO {
 
     public void setDob(Date dob) {
         this.dob = dob;
+    }
+
+    public AddressDTO getAddressDTO() {
+        return addressDTO;
+    }
+
+    public void setAddressDTO(AddressDTO addressDTO) {
+        this.addressDTO = addressDTO;
     }
 }
