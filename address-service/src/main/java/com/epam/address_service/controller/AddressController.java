@@ -18,7 +18,7 @@ public class AddressController {
 
     @GetMapping(value = "{id}")
     public ResponseEntity<AddressDTO> getAddress(@PathVariable String id) {
-        return ResponseEntity.status(HttpStatus.FOUND).body(addressService.getAddressById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(addressService.getAddressById(id));
     }
 
     @PostMapping

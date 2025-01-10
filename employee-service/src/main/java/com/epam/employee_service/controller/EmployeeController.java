@@ -18,11 +18,11 @@ public class EmployeeController {
 
     @GetMapping(value = "{id}")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable String id) {
-        return ResponseEntity.status(HttpStatus.FOUND).body(employeeService.getEmployeeAndAddressById(id));
+        return ResponseEntity.status(HttpStatus.FOUND).body(employeeService.getEmployee(id));
     }
 
     @PostMapping
     public ResponseEntity<EmployeeDTO> saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.saveEmployeeWithAddress(employeeDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(employeeService.saveEmployee(employeeDTO));
     }
 }

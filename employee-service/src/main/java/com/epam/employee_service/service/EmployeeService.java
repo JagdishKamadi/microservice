@@ -4,18 +4,19 @@ import com.epam.employee_service.dto.AddressDTO;
 import com.epam.employee_service.dto.EmployeeDTO;
 import com.epam.employee_service.model.Employee;
 import com.epam.employee_service.repository.EmployeeRepository;
+import com.epam.employee_service.rest_client.AddressClientService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Service
 public class EmployeeService {
 
-    private final EmployeeRepository employeeRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -23,30 +24,24 @@ public class EmployeeService {
     @Autowired
     private WebClient webClient;
 
+    @Autowired
+    private AddressClientService addressClientService;
+
     @Value("${address.service.base.url}")
     private String baseUrl;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-
-    }
-
-    public EmployeeDTO getEmployeeAndAddressById(final String id) {
+    public EmployeeDTO getEmployee(final String id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee does not exists for this id" + id));
         EmployeeDTO employeeDTO = new EmployeeDTO();
-//        AddressDTO addressDTO = restTemplate.getForObject(baseUrl + "/address/{id}", AddressDTO.class, employee.getId());
-        Mono<AddressDTO> addressDTOMono = webClient.get()
-                .uri(baseUrl + "/address/{id}", employee.getId())
-                .retrieve()
-                .bodyToMono(AddressDTO.class);
-        employeeDTO.setAddressDTO(addressDTOMono.block());
+        AddressDTO addressDTO = addressClientService.getAddress(id).getBody();
+        employeeDTO.setAddressDTO(addressDTO);
         // act like the model mapper
         BeanUtils.copyProperties(employee, employeeDTO, EmployeeDTO.class);
 
         return employeeDTO;
     }
 
-    public EmployeeDTO saveEmployeeWithAddress(EmployeeDTO employeeDTO) {
+    public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee, Employee.class);
         employee = employeeRepository.save(employee);
@@ -54,13 +49,8 @@ public class EmployeeService {
 
         AddressDTO addressDTO = employeeDTO.getAddressDTO();
         addressDTO.setId(employeeDTO.getId());
-//        AddressDTO addressDTOResponseEntity = restTemplate.postForObject(baseUrl + "/address", addressDTO, AddressDTO.class);
-        Mono<AddressDTO> addressDTOMono = webClient.post()
-                .uri(baseUrl + "/address")
-                .bodyValue(addressDTO)
-                .retrieve()
-                .bodyToMono(AddressDTO.class);
-        employeeDTO.setAddressDTO(addressDTOMono.block());
+        addressDTO = addressClientService.saveAddress(addressDTO).getBody();
+        employeeDTO.setAddressDTO(addressDTO);
 
         return employeeDTO;
     }
