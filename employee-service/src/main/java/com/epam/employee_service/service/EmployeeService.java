@@ -34,8 +34,12 @@ public class EmployeeService {
     public EmployeeDTO getEmployeeAndAddressById(final String id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee does not exists for this id" + id));
         EmployeeDTO employeeDTO = new EmployeeDTO();
-        AddressDTO addressDTO = restTemplate.getForObject(baseUrl + "/address/{id}", AddressDTO.class, employee.getId());
-        employeeDTO.setAddressDTO(addressDTO);
+//        AddressDTO addressDTO = restTemplate.getForObject(baseUrl + "/address/{id}", AddressDTO.class, employee.getId());
+        Mono<AddressDTO> addressDTOMono = webClient.get()
+                .uri(baseUrl + "/address/{id}", employee.getId())
+                .retrieve()
+                .bodyToMono(AddressDTO.class);
+        employeeDTO.setAddressDTO(addressDTOMono.block());
         // act like the model mapper
         BeanUtils.copyProperties(employee, employeeDTO, EmployeeDTO.class);
 
