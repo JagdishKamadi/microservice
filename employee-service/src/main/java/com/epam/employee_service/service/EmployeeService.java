@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 public class EmployeeService {
@@ -17,6 +19,9 @@ public class EmployeeService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private WebClient webClient;
 
     @Value("${address.service.base.url}")
     private String baseUrl;
@@ -45,8 +50,13 @@ public class EmployeeService {
 
         AddressDTO addressDTO = employeeDTO.getAddressDTO();
         addressDTO.setId(employeeDTO.getId());
-        AddressDTO addressDTOResponseEntity = restTemplate.postForObject(baseUrl + "/address", addressDTO, AddressDTO.class);
-        employeeDTO.setAddressDTO(addressDTOResponseEntity);
+//        AddressDTO addressDTOResponseEntity = restTemplate.postForObject(baseUrl + "/address", addressDTO, AddressDTO.class);
+        Mono<AddressDTO> addressDTOMono = webClient.post()
+                .uri(baseUrl + "/address")
+                .bodyValue(addressDTO)
+                .retrieve()
+                .bodyToMono(AddressDTO.class);
+        employeeDTO.setAddressDTO(addressDTOMono.block());
 
         return employeeDTO;
     }
