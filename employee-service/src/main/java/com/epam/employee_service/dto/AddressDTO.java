@@ -1,10 +1,7 @@
 package com.epam.employee_service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class AddressDTO {
 
-    @JsonIgnore
     private String id;
     private String houseNumber;
     private String landmark;

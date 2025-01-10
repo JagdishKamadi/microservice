@@ -40,15 +40,14 @@ public class EmployeeService {
     public EmployeeDTO saveEmployeeWithAddress(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee, Employee.class);
-
-        employeeRepository.save(employee);
+        employee = employeeRepository.save(employee);
         BeanUtils.copyProperties(employee, employeeDTO, EmployeeDTO.class);
 
         AddressDTO addressDTO = employeeDTO.getAddressDTO();
-        addressDTO.setId(employee.getId());
-
+        addressDTO.setId(employeeDTO.getId());
         AddressDTO addressDTOResponseEntity = restTemplate.postForObject(baseUrl + "/address", addressDTO, AddressDTO.class);
         employeeDTO.setAddressDTO(addressDTOResponseEntity);
+
         return employeeDTO;
     }
 }

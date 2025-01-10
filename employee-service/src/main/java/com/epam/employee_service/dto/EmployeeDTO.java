@@ -1,12 +1,9 @@
 package com.epam.employee_service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Date;
 
 public class EmployeeDTO {
 
-    @JsonIgnore
     private String id;
     private String fullName;
     private String email;
